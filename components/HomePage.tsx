@@ -17,38 +17,40 @@ export default function HomePage() {
           >
             Little Bouquet
           </Link>
-          <div className="hidden md:flex items-center gap-6 lg:gap-10">
-            <Link 
-              href="/story" 
-              className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
-            >
-              Story
-            </Link>
-            <Link 
-              href="/#choose-flower" 
-              className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
-            >
-              Collection
-            </Link>
-            <Link 
-              href="/choose-flower" 
-              className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
-            >
-              Build Your Bouquet
-            </Link>
-            <Link 
-              href="/#birthstones" 
-              className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
-            >
-              Birthstones
-            </Link>
-            <Link 
-              href="/journal" 
-              className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
-            >
-              Journal
-            </Link>
+          <div className="flex items-center gap-4">
             <LanguageSwitcher />
+            <div className="hidden md:flex items-center gap-6 lg:gap-10">
+              <Link 
+                href="/story" 
+                className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
+              >
+                Story
+              </Link>
+              <Link 
+                href="/#choose-flower" 
+                className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
+              >
+                Collection
+              </Link>
+              <Link 
+                href="/choose-flower" 
+                className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
+              >
+                Build Your Bouquet
+              </Link>
+              <Link 
+                href="/#birthstones" 
+                className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
+              >
+                Birthstones
+              </Link>
+              <Link 
+                href="/journal" 
+                className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
+              >
+                Journal
+              </Link>
+            </div>
           </div>
         </div>
       </nav>

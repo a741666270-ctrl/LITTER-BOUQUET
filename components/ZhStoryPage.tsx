@@ -8,46 +8,48 @@ export default function ZhStoryPage() {
   return (
     <main className="bg-[#FAF7F2] min-h-screen">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-12 py-6 bg-[#FAF7F2]/95 backdrop-blur-sm border-b border-[#EDE8E0]/50">
+      <nav className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-8 lg:px-12 py-4 sm:py-6 bg-[#FAF7F2]/95 backdrop-blur-sm border-b border-[#EDE8E0]/50">
         <div className="max-w-[1400px] mx-auto flex justify-between items-center">
           <Link 
             href="/zh" 
-            className="zh-brand text-base tracking-[0.25em] text-gray-900 uppercase"
+            className="zh-brand text-sm sm:text-base tracking-[0.25em] text-gray-900 uppercase"
           >
             Little Bouquet
           </Link>
-          <div className="flex items-center gap-10">
-            <Link 
-              href="/zh/story" 
-              className="font-sans text-xs tracking-[0.2em] text-gray-900 uppercase hover:text-gray-600 transition-colors"
-            >
-              品牌故事
-            </Link>
-            <Link 
-              href="/zh/#choose-flower" 
-              className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
-            >
-              系列
-            </Link>
-            <Link 
-              href="/zh/choose-flower" 
-              className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
-            >
-              定制花束
-            </Link>
-            <Link 
-              href="/zh/birthstone" 
-              className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
-            >
-              生日石
-            </Link>
-            <Link 
-              href="/zh/journal" 
-              className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
-            >
-              日志
-            </Link>
+          <div className="flex items-center gap-4 sm:gap-10">
             <LanguageSwitcher />
+            <div className="hidden md:flex items-center gap-10">
+              <Link 
+                href="/zh/story" 
+                className="font-sans text-xs tracking-[0.2em] text-gray-900 uppercase hover:text-gray-600 transition-colors"
+              >
+                品牌故事
+              </Link>
+              <Link 
+                href="/zh/#choose-flower" 
+                className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
+              >
+                系列
+              </Link>
+              <Link 
+                href="/zh/choose-flower" 
+                className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
+              >
+                定制花束
+              </Link>
+              <Link 
+                href="/zh/birthstone" 
+                className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
+              >
+                生日石
+              </Link>
+              <Link 
+                href="/zh/journal" 
+                className="font-sans text-xs tracking-[0.2em] text-gray-700 uppercase hover:text-gray-900 transition-colors"
+              >
+                日志
+              </Link>
+            </div>
           </div>
         </div>
       </nav>

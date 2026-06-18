@@ -66,14 +66,16 @@ export default function ZhChooseFlowerPage() {
           >
             Little Bouquet
           </Link>
-          <div className="flex items-center gap-6 sm:gap-10">
-            <Link 
-              href="/zh/build-bouquet" 
-              className="font-sans text-xs tracking-[0.2em] text-gray-500 uppercase hover:text-gray-900 transition-colors"
-            >
-              查看花束
-            </Link>
+          <div className="flex items-center gap-4 sm:gap-10">
             <LanguageSwitcher />
+            <div className="hidden md:flex items-center gap-6 lg:gap-10">
+              <Link 
+                href="/zh/build-bouquet" 
+                className="font-sans text-xs tracking-[0.2em] text-gray-500 uppercase hover:text-gray-900 transition-colors"
+              >
+                查看花束
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
