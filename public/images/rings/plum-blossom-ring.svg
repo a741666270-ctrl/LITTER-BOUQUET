@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E8D9C5"/>
+      <stop offset="30%" stop-color="#D4B896"/>
+      <stop offset="70%" stop-color="#C9A86C"/>
+      <stop offset="100%" stop-color="#B8946A"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="400" fill="#FAFAF8"/>
+  
+  <!-- Ring Band -->
+  <ellipse cx="200" cy="240" rx="120" ry="80" fill="none" stroke="url(#gold)" stroke-width="20" filter="url(#shadow)"/>
+  
+  <!-- Gem Setting -->
+  <ellipse cx="200" cy="100" rx="55" ry="48" fill="url(#gold)" filter="url(#shadow)"/>
+  
+  <!-- Amethyst Birthstone -->
+  <ellipse cx="200" cy="90" rx="42" ry="36" fill="#6B3FA0" opacity="0.9"/>
+  
+  <!-- Shine -->
+  <ellipse cx="185" cy="78" rx="12" ry="8" fill="white" opacity="0.5"/>
+  <circle cx="175" cy="72" r="3" fill="white" opacity="0.7"/>
+</svg>

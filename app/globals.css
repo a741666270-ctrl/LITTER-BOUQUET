@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-serif);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-block px-8 py-4 bg-gray-900 text-white font-sans text-sm tracking-widest uppercase transition-all duration-300 hover:bg-accent-gold hover:text-gray-900;
+  }
+
+  .btn-secondary {
+    @apply inline-block px-8 py-4 border border-gray-900 text-gray-900 font-sans text-sm tracking-widest uppercase transition-all duration-300 hover:bg-gray-900 hover:text-white;
+  }
+
+  .btn-gold {
+    @apply inline-block px-8 py-4 bg-accent-gold text-white font-sans text-sm tracking-widest uppercase transition-all duration-300 hover:bg-accent-gold-dark;
+  }
+
+  .section-title {
+    @apply font-serif text-3xl md:text-4xl lg:text-5xl text-gray-900 mb-4;
+  }
+
+  .section-subtitle {
+    @apply font-sans text-sm tracking-widest text-gray-500 uppercase mb-8;
+  }
+
+  .elegant-divider {
+    @apply w-16 h-px bg-accent-gold mx-auto my-12;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
