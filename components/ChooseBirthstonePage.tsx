@@ -1,4 +1,4 @@
-// NEW VERSION 3
+// NEW VERSION 4 - Mobile-optimized compact layout
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -9,13 +9,12 @@ import { useBouquet } from "@/context/BouquetContext";
 import { Flower, Birthstone } from "@/types";
 
 const monthNames = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ];
 
 const DEFAULT_PREVIEW = "/images/daisy.png";
 
-// Flower-specific ring placeholder images
 const flowerRingPlaceholders: Record<string, string> = {
   "peach-blossom": "/images/peach-blossom/white/4.png",
   "daisy": "/images/daisy/white/4.png",
@@ -133,57 +132,188 @@ export default function ChooseBirthstonePage() {
   }
 
   return (
-    <main className="min-h-screen bg-white">
-      <header className="border-b border-gray-200">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex items-center justify-between">
-          <Link href="/" className="font-serif text-sm sm:text-base lg:text-lg tracking-[0.15em] text-gray-900">
-            Little Bouquet
-          </Link>
+    <main className="min-h-screen bg-white flex flex-col">
+      {/* ── Mobile Header ─────────────────────────────────────── */}
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+        <div className="px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleBack}
+              className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors"
+              aria-label="Go back"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M10 3L5 8l5 5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            <span className="font-serif text-sm tracking-[0.1em] text-gray-900 uppercase">
+              {selectedFlower.name}
+            </span>
+          </div>
           <Link
             href="/build-bouquet"
-            className="font-sans text-[11px] sm:text-xs tracking-[0.15em] text-gray-500 uppercase hover:text-gray-900 transition-colors"
+            className="font-sans text-[11px] tracking-[0.15em] text-gray-500 uppercase hover:text-gray-900 transition-colors"
           >
-            View Bouquet
+            View
           </Link>
         </div>
       </header>
 
-      <section className="border-b border-gray-100 bg-white">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5 flex items-center justify-center gap-2 sm:gap-3 text-[10px] sm:text-[11px] tracking-[0.2em] uppercase text-gray-400">
-          <span>Choose Flower</span>
-          <span className="text-gray-300">—</span>
-          <span className="text-accent-gold font-medium">Step Two</span>
-          <span className="text-gray-300">—</span>
-          <span>Your Bouquet</span>
+      {/* ── Mobile: Sticky Preview ─────────────────────────────── */}
+      <div className="sticky top-[53px] z-40 bg-white border-b border-gray-100 px-4 pt-3 pb-2">
+        <div className="aspect-square max-h-[45vh] mx-auto bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
+          {selectedFlower ? (
+            <DynamicPreview
+              flowerId={selectedFlower.id}
+              metal={selectedMetal}
+              month={selectedBirthstone?.month}
+            />
+          ) : (
+            <p className="font-serif text-sm italic text-gray-400 text-center px-4">
+              Select options to preview
+            </p>
+          )}
         </div>
-      </section>
-
-      <section className="pt-8 sm:pt-10 pb-4 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-[1440px] mx-auto text-center">
-          <p className="font-sans text-[11px] sm:text-xs tracking-[0.3em] text-accent-gold uppercase mb-3 sm:mb-4">
-            Step Two
-          </p>
-          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] text-gray-900 leading-[1.1]">
-            Select Birthstone
-          </h1>
-          <div className="w-10 h-px bg-accent-gold mx-auto mt-4 sm:mt-5 mb-4 sm:mb-5" />
-          <p className="font-serif text-base sm:text-lg italic text-gray-500 max-w-xl mx-auto leading-relaxed px-4">
-            Choose a metal and a birthstone to complete your ring.
-          </p>
+        {/* Selection summary row */}
+        <div className="flex items-center justify-center gap-1 mt-2 text-[10px] tracking-wide">
+          <span className={`font-sans ${selectedMetal ? "text-gray-900" : "text-gray-400"}`}>
+            {selectedMetalLabel}
+          </span>
+          <span className="text-gray-300">·</span>
+          <span className={`font-sans ${selectedBirthstone ? "text-gray-900" : "text-gray-400"}`}>
+            {selectedBirthstone ? selectedBirthstone.name : "—"}
+          </span>
+          <span className="text-gray-300">·</span>
+          <span className={`font-sans ${selectedBirthstone ? "text-gray-900" : "text-gray-400"}`}>
+            {selectedBirthstone ? monthNames[selectedBirthstone.month - 1] : "—"}
+          </span>
         </div>
-      </section>
+      </div>
 
-      <section className="px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16 lg:pb-20 pt-4 sm:pt-6">
+      {/* ── Mobile: Configuration Steps ────────────────────────── */}
+      <div className="flex-1 px-4 pt-4 pb-28 space-y-5">
+
+        {/* Step 1: Metal */}
+        <div>
+          <p className="font-sans text-[10px] tracking-[0.3em] text-gray-400 uppercase mb-2">
+            01 — Metal
+          </p>
+          <div className="flex gap-2">
+            {metals.map((metal) => {
+              const isSelected = selectedMetal === metal.id;
+              return (
+                <button
+                  key={metal.id}
+                  type="button"
+                  onClick={() => setSelectedMetal(metal.id)}
+                  className={`flex-1 py-3 px-2 border text-center transition-all duration-200 ${
+                    isSelected
+                      ? "border-accent-gold bg-accent-gold/[0.06] text-gray-900"
+                      : "border-gray-200 text-gray-600 hover:border-gray-400"
+                  }`}
+                >
+                  <span className="font-sans text-[11px] tracking-wide block">{metal.name}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Step 2: Birthstone */}
+        <div>
+          <p className="font-sans text-[10px] tracking-[0.3em] text-gray-400 uppercase mb-2">
+            02 — Birthstone
+          </p>
+          <div className="grid grid-cols-4 gap-2">
+            {birthstones.map((stone) => {
+              const isSelected = selectedBirthstone?.id === stone.id;
+              return (
+                <button
+                  key={stone.id}
+                  type="button"
+                  onClick={() => setSelectedBirthstone(stone)}
+                  className={`flex flex-col items-center gap-1 py-3 border transition-all duration-200 ${
+                    isSelected
+                      ? "border-accent-gold bg-accent-gold/[0.06]"
+                      : "border-gray-200 hover:border-gray-400"
+                  }`}
+                >
+                  <div
+                    className={`w-5 h-5 rounded-full shadow-sm transition-transform duration-200 ${
+                      isSelected ? "scale-125" : ""
+                    }`}
+                    style={{ backgroundColor: stone.color }}
+                  />
+                  <span className="font-sans text-[9px] text-gray-500 tracking-wide leading-tight">
+                    {monthNames[stone.month - 1]}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Step 3: Stone details */}
+        {selectedBirthstone && (
+          <div className="pt-1">
+            <div className="flex items-center gap-2 mb-2">
+              <div
+                className="w-5 h-5 rounded-full shadow-sm flex-shrink-0"
+                style={{ backgroundColor: selectedBirthstone.color }}
+              />
+              <div>
+                <p className="font-serif text-base text-gray-900 leading-tight">
+                  {selectedBirthstone.name}
+                </p>
+                <p className="font-sans text-[10px] text-gray-500 tracking-wide">
+                  {monthNames[selectedBirthstone.month - 1]} · {selectedFlower.meaning}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── Mobile: Fixed Bottom CTA ───────────────────────────── */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-4 py-3">
+        <button
+          type="button"
+          onClick={handleConfirm}
+          disabled={!canConfirm}
+          className={`w-full py-4 font-sans text-[11px] tracking-[0.2em] uppercase transition-all duration-300 border min-h-[52px] ${
+            canConfirm
+              ? "border-gray-900 bg-gray-900 text-white hover:border-accent-gold hover:bg-accent-gold hover:text-gray-900"
+              : "border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
+          }`}
+        >
+          {isFull ? "Bouquet is Full" : "Add to Bouquet →"}
+        </button>
+      </div>
+
+      {/* ── Desktop: Full Layout ───────────────────────────────── */}
+      <section className="hidden lg:block px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16 lg:pb-20 pt-4 sm:pt-6">
         <div className="max-w-[1440px] mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+          <div className="text-center mb-8">
+            <p className="font-sans text-[11px] tracking-[0.3em] text-accent-gold uppercase mb-3">
+              Step Two
+            </p>
+            <h1 className="font-serif text-4xl lg:text-[3.5rem] text-gray-900 leading-[1.1]">
+              Select Birthstone
+            </h1>
+            <div className="w-10 h-px bg-accent-gold mx-auto mt-5 mb-5" />
+            <p className="font-serif text-lg italic text-gray-500 max-w-xl mx-auto">
+              Choose a metal and a birthstone to complete your ring.
+            </p>
+          </div>
 
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 items-start">
             {/* Metal Selector */}
-            <div className="lg:col-span-12 xl:col-span-3 order-3 lg:order-1">
-              <div className="bg-white border border-gray-200 p-4 sm:p-6">
-                <p className="font-sans text-[11px] tracking-[0.25em] text-gray-500 uppercase mb-4 sm:mb-5 text-center">
+            <div className="xl:col-span-3 order-3 xl:order-1">
+              <div className="bg-white border border-gray-200 p-6">
+                <p className="font-sans text-[11px] tracking-[0.25em] text-gray-500 uppercase mb-5 text-center">
                   Choose Metal
                 </p>
-                <div className="space-y-2 sm:space-y-3">
+                <div className="space-y-3">
                   {metals.map((metal) => {
                     const isSelected = selectedMetal === metal.id;
                     return (
@@ -191,28 +321,20 @@ export default function ChooseBirthstonePage() {
                         key={metal.id}
                         type="button"
                         onClick={() => setSelectedMetal(metal.id)}
-                        className={`w-full flex items-center gap-3 sm:gap-4 py-4 sm:py-5 px-4 sm:px-5 border transition-all duration-300 min-h-[48px] ${
+                        className={`w-full flex items-center gap-4 py-5 px-5 border transition-all duration-300 min-h-[48px] ${
                           isSelected
                             ? "border-accent-gold bg-accent-gold/[0.08]"
                             : "border-gray-200 hover:border-gray-400"
                         }`}
                       >
-                        <span
-                          className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] leading-none transition-all duration-300 flex-shrink-0 ${
-                            isSelected
-                              ? "border-accent-gold bg-accent-gold text-white"
-                              : "border-gray-400 text-transparent"
-                          }`}
-                        >
-                          ●
-                        </span>
-                        <span
-                          className={`font-sans text-sm tracking-wide transition-colors duration-300 ${
-                            isSelected ? "text-gray-900" : "text-gray-700"
-                          }`}
-                        >
-                          {metal.name}
-                        </span>
+                        <span className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] leading-none transition-all duration-300 flex-shrink-0 ${
+                          isSelected
+                            ? "border-accent-gold bg-accent-gold text-white"
+                            : "border-gray-400 text-transparent"
+                        }`}>●</span>
+                        <span className={`font-sans text-sm tracking-wide transition-colors duration-300 ${
+                          isSelected ? "text-gray-900" : "text-gray-700"
+                        }`}>{metal.name}</span>
                       </button>
                     );
                   })}
@@ -221,9 +343,9 @@ export default function ChooseBirthstonePage() {
             </div>
 
             {/* Product Preview */}
-            <div className="lg:col-span-12 xl:col-span-6 order-1 lg:order-2">
-              <div className="bg-white border border-gray-200 p-3 sm:p-4">
-                <p className="font-sans text-[11px] tracking-[0.25em] text-gray-400 uppercase mb-3 sm:mb-4 text-center">
+            <div className="xl:col-span-6 order-1 xl:order-2">
+              <div className="bg-white border border-gray-200 p-4">
+                <p className="font-sans text-[11px] tracking-[0.25em] text-gray-400 uppercase mb-4 text-center">
                   Product Preview
                 </p>
                 <div className="aspect-[4/5] bg-white border border-gray-100 flex items-center justify-center overflow-hidden">
@@ -234,68 +356,50 @@ export default function ChooseBirthstonePage() {
                       month={selectedBirthstone?.month}
                     />
                   ) : (
-                    <p className="font-serif text-sm sm:text-base italic text-gray-400 text-center px-4">
+                    <p className="font-serif text-base italic text-gray-400 text-center px-4">
                       Select options to preview your ring.
                     </p>
                   )}
                 </div>
-                <div className="flex items-center justify-center gap-2 mt-4 sm:mt-5">
-                  <span className="w-4 h-[2px] bg-accent-gold rounded-full" />
-                  <span className="w-4 h-[2px] bg-gray-300 rounded-full" />
-                  <span className="w-4 h-[2px] bg-gray-300 rounded-full" />
-                </div>
               </div>
             </div>
 
-            {/* Your Selection */}
-            <div className="lg:col-span-12 xl:col-span-3 order-2 lg:order-3">
-              <div className="bg-white border border-gray-200 p-4 sm:p-6">
-                <p className="font-sans text-[11px] tracking-[0.25em] text-gray-500 uppercase mb-4 sm:mb-5 text-center">
+            {/* Selection Summary */}
+            <div className="xl:col-span-3 order-2 xl:order-3">
+              <div className="bg-white border border-gray-200 p-6">
+                <p className="font-sans text-[11px] tracking-[0.25em] text-gray-500 uppercase mb-5 text-center">
                   Your Selection
                 </p>
                 <div className="space-y-4 text-center">
                   <div>
-                    <p className="font-sans text-[11px] tracking-[0.2em] text-gray-400 uppercase mb-1">
-                      Selected Flower
-                    </p>
-                    <p className="font-serif text-base sm:text-lg text-gray-900">
-                      {selectedFlower.name}
-                    </p>
-                    <p className="font-serif text-sm italic text-gray-500 mt-1">
-                      {selectedFlower.meaning}
-                    </p>
+                    <p className="font-sans text-[11px] tracking-[0.2em] text-gray-400 uppercase mb-1">Flower</p>
+                    <p className="font-serif text-lg text-gray-900">{selectedFlower.name}</p>
+                    <p className="font-serif text-sm italic text-gray-500 mt-1">{selectedFlower.meaning}</p>
                   </div>
                   <div className="border-t border-gray-100 pt-4">
-                    <p className="font-sans text-[11px] tracking-[0.2em] text-gray-400 uppercase mb-1">
-                      Selected Metal
-                    </p>
-                    <p className="font-serif text-base sm:text-lg text-gray-900">{selectedMetalLabel}</p>
+                    <p className="font-sans text-[11px] tracking-[0.2em] text-gray-400 uppercase mb-1">Metal</p>
+                    <p className="font-serif text-lg text-gray-900">{selectedMetalLabel}</p>
                   </div>
                   <div className="border-t border-gray-100 pt-4">
-                    <p className="font-sans text-[11px] tracking-[0.2em] text-gray-400 uppercase mb-1">
-                      Selected Birthstone
-                    </p>
-                    <p className="font-serif text-base sm:text-lg text-gray-900">
-                      {selectedBirthstone
-                        ? `${selectedBirthstone.name} / ${monthNames[selectedBirthstone.month - 1]}`
-                        : "—"}
+                    <p className="font-sans text-[11px] tracking-[0.2em] text-gray-400 uppercase mb-1">Birthstone</p>
+                    <p className="font-serif text-lg text-gray-900">
+                      {selectedBirthstone ? `${selectedBirthstone.name} / ${monthNames[selectedBirthstone.month - 1]}` : "—"}
                     </p>
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
 
           {/* Birthstone Grid */}
-          <div className="mt-10 sm:mt-14 lg:mt-16">
-            <div className="flex items-center gap-3 mb-5 sm:mb-6">
-              <div className="w-6 sm:w-8 h-px bg-accent-gold/40" />
-              <p className="font-sans text-[11px] sm:text-xs tracking-[0.25em] text-gray-500 uppercase">
+          <div className="mt-16">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-px bg-accent-gold/40" />
+              <p className="font-sans text-xs tracking-[0.25em] text-gray-500 uppercase">
                 Choose Birthstone
               </p>
             </div>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 sm:gap-3">
+            <div className="grid grid-cols-6 gap-3">
               {birthstones.map((stone) => {
                 const isSelected = selectedBirthstone?.id === stone.id;
                 return (
@@ -303,22 +407,15 @@ export default function ChooseBirthstonePage() {
                     key={stone.id}
                     type="button"
                     onClick={() => setSelectedBirthstone(stone)}
-                    className={`flex flex-col items-center justify-center gap-2 py-4 sm:py-5 border transition-all duration-300 min-h-[72px] sm:min-h-[80px] ${
+                    className={`flex flex-col items-center justify-center gap-2 py-5 border transition-all duration-300 min-h-[80px] ${
                       isSelected
                         ? "border-accent-gold bg-accent-gold/[0.06]"
                         : "border-gray-200 hover:border-gray-400"
                     }`}
                   >
-                    <div
-                      className={`w-8 sm:w-9 h-8 sm:h-9 rounded-full shadow-sm transition-transform duration-300 ${
-                        isSelected ? "scale-110" : ""
-                      }`}
-                      style={{ backgroundColor: stone.color }}
-                    />
-                    <p className="font-serif text-xs sm:text-sm text-gray-900 leading-tight">
-                      {stone.name}
-                    </p>
-                    <p className="font-sans text-[9px] sm:text-[10px] tracking-widest text-gray-500 uppercase leading-tight">
+                    <div className={`w-9 h-9 rounded-full shadow-sm transition-transform duration-300 ${isSelected ? "scale-110" : ""}`} style={{ backgroundColor: stone.color }} />
+                    <p className="font-serif text-sm text-gray-900 leading-tight">{stone.name}</p>
+                    <p className="font-sans text-[10px] tracking-widest text-gray-500 uppercase leading-tight">
                       {monthNames[stone.month - 1]}
                     </p>
                   </button>
@@ -329,20 +426,14 @@ export default function ChooseBirthstonePage() {
         </div>
       </section>
 
-      <section className="border-t border-gray-100 bg-white">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex items-center justify-between gap-4">
-          <button
-            type="button"
-            onClick={handleBack}
-            className="font-sans text-[11px] sm:text-xs tracking-[0.2em] text-gray-500 uppercase hover:text-gray-900 transition-colors"
-          >
-            ← Back
-          </button>
+      {/* ── Desktop Bottom CTA ─────────────────────────────────── */}
+      <div className="hidden lg:block border-t border-gray-100 bg-white">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-end gap-4">
           <button
             type="button"
             onClick={handleConfirm}
             disabled={!canConfirm}
-            className={`px-6 sm:px-10 py-4 font-sans text-[11px] sm:text-xs tracking-[0.2em] uppercase transition-all duration-300 border min-h-[48px] ${
+            className={`px-10 py-4 font-sans text-xs tracking-[0.2em] uppercase transition-all duration-300 border min-h-[48px] ${
               canConfirm
                 ? "border-gray-900 bg-gray-900 text-white hover:border-accent-gold hover:bg-accent-gold hover:text-gray-900"
                 : "border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
@@ -351,7 +442,7 @@ export default function ChooseBirthstonePage() {
             {isFull ? "Bouquet is Full" : "Add to Bouquet"}
           </button>
         </div>
-      </section>
+      </div>
     </main>
   );
 }
