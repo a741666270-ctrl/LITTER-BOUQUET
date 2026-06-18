@@ -19,5 +19,4 @@ export type ImageKey = keyof typeof images;
 
 export const brokenImages: ImageKey[] = [
   "ringDetails",
-  "birthstonesReference",
 ];
