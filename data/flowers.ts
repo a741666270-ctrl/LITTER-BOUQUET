@@ -42,6 +42,13 @@ export const metals: { id: MetalType; name: string; color: string }[] = [
   { id: "rose", name: "Rose Gold", color: "#E8B4B8" },
 ];
 
+export type MaterialType = "14k-gold" | "925-silver";
+
+export const materials: { id: MaterialType; name: string }[] = [
+  { id: "14k-gold", name: "14K Gold" },
+  { id: "925-silver", name: "925 Silver" },
+];
+
 // Ring images: flower -> month (1-12) -> image path
 // Structure: /images/{flower}/{flower}-{gold}-{month}.jpg
 export const flowerRingImages: Record<string, Record<number, string>> = {

@@ -4,7 +4,7 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useCallback, useState, useMemo, useRef } from "react";
-import { birthstones, flowers, metals, MetalType } from "@/data/flowers";
+import { birthstones, flowers, metals, materials, MetalType, MaterialType } from "@/data/flowers";
 import { useBouquet } from "@/context/BouquetContext";
 import { Flower, Birthstone } from "@/types";
 
@@ -73,6 +73,7 @@ export default function ChooseBirthstonePage() {
   const router = useRouter();
   const { addRing, isFull } = useBouquet();
   const [selectedFlower, setSelectedFlower] = useState<Flower | null>(null);
+  const [selectedMaterial, setSelectedMaterial] = useState<MaterialType | null>(null);
   const [selectedMetal, setSelectedMetal] = useState<MetalType | null>(null);
   const [selectedBirthstone, setSelectedBirthstone] = useState<Birthstone | null>(null);
 
@@ -85,7 +86,7 @@ export default function ChooseBirthstonePage() {
   }, []);
 
   const handleConfirm = () => {
-    if (!selectedFlower || !selectedBirthstone || !selectedMetal || isFull) {
+    if (!selectedFlower || !selectedBirthstone || !selectedMaterial || !selectedMetal || isFull) {
       return;
     }
 
@@ -96,6 +97,7 @@ export default function ChooseBirthstonePage() {
       flower: selectedFlower,
       birthstone: selectedBirthstone,
       metal: selectedMetal,
+      material: selectedMaterial,
       timestamp: Date.now(),
       flowerImage: selectedFlower.imagePlaceholder,
       imageUrl: imageUrl,
@@ -110,7 +112,8 @@ export default function ChooseBirthstonePage() {
     router.push("/choose-flower");
   };
 
-  const canConfirm = Boolean(selectedFlower && selectedBirthstone && selectedMetal && !isFull);
+  const canConfirm = Boolean(selectedFlower && selectedBirthstone && selectedMaterial && selectedMetal && !isFull);
+  const selectedMaterialLabel = selectedMaterial ? materials.find((m) => m.id === selectedMaterial)?.name ?? "—" : "—";
   const selectedMetalLabel = selectedMetal ? metals.find((m) => m.id === selectedMetal)?.name ?? "—" : "—";
 
   if (!selectedFlower) {
@@ -176,6 +179,10 @@ export default function ChooseBirthstonePage() {
         </div>
         {/* Selection summary row */}
         <div className="flex items-center justify-center gap-1 mt-2 text-[10px] tracking-wide">
+          <span className={`font-sans ${selectedMaterial ? "text-gray-900" : "text-gray-400"}`}>
+            {selectedMaterialLabel}
+          </span>
+          <span className="text-gray-300">·</span>
           <span className={`font-sans ${selectedMetal ? "text-gray-900" : "text-gray-400"}`}>
             {selectedMetalLabel}
           </span>
@@ -193,10 +200,36 @@ export default function ChooseBirthstonePage() {
       {/* ── Mobile: Configuration Steps ────────────────────────── */}
       <div className="flex-1 px-4 pt-4 pb-28 space-y-5">
 
-        {/* Step 1: Metal */}
+        {/* Step 1: Material */}
         <div>
           <p className="font-sans text-[10px] tracking-[0.3em] text-gray-400 uppercase mb-2">
-            01 — Metal
+            01 — Material
+          </p>
+          <div className="flex gap-2">
+            {materials.map((item) => {
+              const isSelected = selectedMaterial === item.id;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setSelectedMaterial(item.id)}
+                  className={`flex-1 py-3 px-2 border text-center transition-all duration-200 ${
+                    isSelected
+                      ? "border-accent-gold bg-accent-gold/[0.06] text-gray-900"
+                      : "border-gray-200 text-gray-600 hover:border-gray-400"
+                  }`}
+                >
+                  <span className="font-sans text-[11px] tracking-wide block">{item.name}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Step 2: Metal Color */}
+        <div>
+          <p className="font-sans text-[10px] tracking-[0.3em] text-gray-400 uppercase mb-2">
+            02 — Metal Color
           </p>
           <div className="flex gap-2">
             {metals.map((metal) => {
@@ -219,10 +252,10 @@ export default function ChooseBirthstonePage() {
           </div>
         </div>
 
-        {/* Step 2: Birthstone */}
+        {/* Step 3: Birthstone */}
         <div>
           <p className="font-sans text-[10px] tracking-[0.3em] text-gray-400 uppercase mb-2">
-            02 — Birthstone
+            03 — Birthstone
           </p>
           <div className="grid grid-cols-4 gap-2">
             {birthstones.map((stone) => {
@@ -306,12 +339,47 @@ export default function ChooseBirthstonePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 items-start">
-            {/* Metal Selector */}
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 items-start">
+            {/* Material Selector */}
             <div className="xl:col-span-3 order-3 xl:order-1">
               <div className="bg-white border border-gray-200 p-6">
                 <p className="font-sans text-[11px] tracking-[0.25em] text-gray-500 uppercase mb-5 text-center">
-                  Choose Metal
+                  Choose Material
+                </p>
+                <div className="space-y-3">
+                  {materials.map((item) => {
+                    const isSelected = selectedMaterial === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => setSelectedMaterial(item.id)}
+                        className={`w-full flex items-center gap-4 py-5 px-5 border transition-all duration-300 min-h-[48px] ${
+                          isSelected
+                            ? "border-accent-gold bg-accent-gold/[0.08]"
+                            : "border-gray-200 hover:border-gray-400"
+                        }`}
+                      >
+                        <span className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] leading-none transition-all duration-300 flex-shrink-0 ${
+                          isSelected
+                            ? "border-accent-gold bg-accent-gold text-white"
+                            : "border-gray-400 text-transparent"
+                        }`}>●</span>
+                        <span className={`font-sans text-sm tracking-wide transition-colors duration-300 ${
+                          isSelected ? "text-gray-900" : "text-gray-700"
+                        }`}>{item.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Metal Color Selector */}
+            <div className="xl:col-span-3 order-3 xl:order-2">
+              <div className="bg-white border border-gray-200 p-6">
+                <p className="font-sans text-[11px] tracking-[0.25em] text-gray-500 uppercase mb-5 text-center">
+                  Choose Metal Color
                 </p>
                 <div className="space-y-3">
                   {metals.map((metal) => {
@@ -343,7 +411,7 @@ export default function ChooseBirthstonePage() {
             </div>
 
             {/* Product Preview */}
-            <div className="xl:col-span-6 order-1 xl:order-2">
+            <div className="xl:col-span-6 order-1 xl:order-3">
               <div className="bg-white border border-gray-200 p-4">
                 <p className="font-sans text-[11px] tracking-[0.25em] text-gray-400 uppercase mb-4 text-center">
                   Product Preview
@@ -365,7 +433,7 @@ export default function ChooseBirthstonePage() {
             </div>
 
             {/* Selection Summary */}
-            <div className="xl:col-span-3 order-2 xl:order-3">
+            <div className="xl:col-span-3 order-2 xl:order-4">
               <div className="bg-white border border-gray-200 p-6">
                 <p className="font-sans text-[11px] tracking-[0.25em] text-gray-500 uppercase mb-5 text-center">
                   Your Selection
@@ -377,7 +445,11 @@ export default function ChooseBirthstonePage() {
                     <p className="font-serif text-sm italic text-gray-500 mt-1">{selectedFlower.meaning}</p>
                   </div>
                   <div className="border-t border-gray-100 pt-4">
-                    <p className="font-sans text-[11px] tracking-[0.2em] text-gray-400 uppercase mb-1">Metal</p>
+                    <p className="font-sans text-[11px] tracking-[0.2em] text-gray-400 uppercase mb-1">Material</p>
+                    <p className="font-serif text-lg text-gray-900">{selectedMaterialLabel}</p>
+                  </div>
+                  <div className="border-t border-gray-100 pt-4">
+                    <p className="font-sans text-[11px] tracking-[0.2em] text-gray-400 uppercase mb-1">Metal Color</p>
                     <p className="font-serif text-lg text-gray-900">{selectedMetalLabel}</p>
                   </div>
                   <div className="border-t border-gray-100 pt-4">

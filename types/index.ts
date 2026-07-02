@@ -18,6 +18,7 @@ export interface RingItem {
   flower: Flower;
   birthstone: Birthstone;
   metal: string;
+  material: string;
   timestamp: number;
   flowerImage: string;
   imageUrl: string;

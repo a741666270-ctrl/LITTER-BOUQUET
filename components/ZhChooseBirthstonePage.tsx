@@ -4,7 +4,7 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useCallback, useState, useMemo } from "react";
-import { birthstones, flowers, metals, MetalType } from "@/data/flowers";
+import { birthstones, flowers, metals, materials, MetalType, MaterialType } from "@/data/flowers";
 import { useBouquet } from "@/context/BouquetContext";
 import { Flower, Birthstone } from "@/types";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -33,9 +33,14 @@ const birthstoneDisplayData: Record<string, { zhName: string; month: string }> =
 };
 
 const metalDisplayData: Record<string, { zhName: string }> = {
-  "yellow": { zhName: "黄金" },
-  "white": { zhName: "白金" },
-  "rose": { zhName: "玫瑰金" },
+  "yellow": { zhName: "黄金色" },
+  "white": { zhName: "白金色" },
+  "rose": { zhName: "玫瑰金色" },
+};
+
+const materialDisplayData: Record<string, { zhName: string }> = {
+  "14k-gold": { zhName: "14K金" },
+  "925-silver": { zhName: "925银" },
 };
 
 const flowerDisplayData: Record<string, { zhName: string; subtitle: string }> = {
@@ -81,6 +86,7 @@ export default function ZhChooseBirthstonePage() {
   const router = useRouter();
   const { addRing, isFull } = useBouquet();
   const [selectedFlower, setSelectedFlower] = useState<Flower | null>(null);
+  const [selectedMaterial, setSelectedMaterial] = useState<MaterialType | null>(null);
   const [selectedMetal, setSelectedMetal] = useState<MetalType | null>(null);
   const [selectedBirthstone, setSelectedBirthstone] = useState<Birthstone | null>(null);
 
@@ -93,7 +99,7 @@ export default function ZhChooseBirthstonePage() {
   }, []);
 
   const handleConfirm = () => {
-    if (!selectedFlower || !selectedBirthstone || !selectedMetal || isFull) {
+    if (!selectedFlower || !selectedBirthstone || !selectedMaterial || !selectedMetal || isFull) {
       return;
     }
 
@@ -104,6 +110,7 @@ export default function ZhChooseBirthstonePage() {
       flower: selectedFlower,
       birthstone: selectedBirthstone,
       metal: selectedMetal,
+      material: selectedMaterial,
       timestamp: Date.now(),
       flowerImage: selectedFlower.imagePlaceholder,
       imageUrl: imageUrl,
@@ -118,9 +125,10 @@ export default function ZhChooseBirthstonePage() {
     router.push("/zh/choose-flower");
   };
 
-  const canConfirm = Boolean(selectedFlower && selectedBirthstone && selectedMetal && !isFull);
+  const canConfirm = Boolean(selectedFlower && selectedBirthstone && selectedMaterial && selectedMetal && !isFull);
 
   const flowerDisplay = selectedFlower ? flowerDisplayData[selectedFlower.id] || { zhName: selectedFlower.name, subtitle: selectedFlower.meaning } : null;
+  const materialDisplay = selectedMaterial ? materialDisplayData[selectedMaterial] || { zhName: selectedMaterial } : null;
   const metalDisplay = selectedMetal ? metalDisplayData[selectedMetal] || { zhName: selectedMetal } : null;
   const birthstoneDisplay = selectedBirthstone ? birthstoneDisplayData[selectedBirthstone.id] || { zhName: selectedBirthstone.name, month: "" } : null;
 
@@ -190,6 +198,10 @@ export default function ZhChooseBirthstonePage() {
         </div>
         {/* Selection summary row */}
         <div className="flex items-center justify-center gap-1 mt-2 text-[10px] tracking-wide">
+          <span className={`font-sans ${selectedMaterial ? "text-gray-900" : "text-gray-400"}`}>
+            {materialDisplay?.zhName || "—"}
+          </span>
+          <span className="text-gray-300">·</span>
           <span className={`font-sans ${selectedMetal ? "text-gray-900" : "text-gray-400"}`}>
             {metalDisplay?.zhName || "—"}
           </span>
@@ -207,10 +219,37 @@ export default function ZhChooseBirthstonePage() {
       {/* ── Mobile: Configuration Steps ────────────────────────── */}
       <div className="flex-1 px-4 pt-4 pb-28 space-y-5">
 
-        {/* Step 1: Metal */}
+        {/* Step 1: Material */}
         <div>
           <p className="font-sans text-[10px] tracking-[0.3em] text-gray-400 uppercase mb-2">
-            01 — 金属
+            01 — 材质
+          </p>
+          <div className="flex gap-2">
+            {materials.map((item) => {
+              const isSelected = selectedMaterial === item.id;
+              const display = materialDisplayData[item.id] || { zhName: item.name };
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setSelectedMaterial(item.id)}
+                  className={`flex-1 py-3 px-2 border text-center transition-all duration-200 ${
+                    isSelected
+                      ? "border-accent-gold bg-accent-gold/[0.06] text-gray-900"
+                      : "border-gray-200 text-gray-600 hover:border-gray-400"
+                  }`}
+                >
+                  <span className="zh-heading text-[11px] tracking-wide block">{display.zhName}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Step 2: Metal Color */}
+        <div>
+          <p className="font-sans text-[10px] tracking-[0.3em] text-gray-400 uppercase mb-2">
+            02 — 金属颜色
           </p>
           <div className="flex gap-2">
             {metals.map((metal) => {
@@ -234,10 +273,10 @@ export default function ZhChooseBirthstonePage() {
           </div>
         </div>
 
-        {/* Step 2: Birthstone */}
+        {/* Step 3: Birthstone */}
         <div>
           <p className="font-sans text-[10px] tracking-[0.3em] text-gray-400 uppercase mb-2">
-            02 — 生辰石
+            03 — 生辰石
           </p>
           <div className="grid grid-cols-4 gap-2">
             {birthstones.map((stone) => {
@@ -394,7 +433,11 @@ export default function ZhChooseBirthstonePage() {
                     <p className="zh-serif text-sm italic text-gray-500 mt-1">{flowerDisplay?.subtitle}</p>
                   </div>
                   <div className="border-t border-gray-100 pt-4">
-                    <p className="font-sans text-[11px] tracking-[0.2em] text-gray-400 uppercase mb-1">金属</p>
+                    <p className="font-sans text-[11px] tracking-[0.2em] text-gray-400 uppercase mb-1">材质</p>
+                    <p className="zh-heading text-lg text-gray-900">{materialDisplay?.zhName || "—"}</p>
+                  </div>
+                  <div className="border-t border-gray-100 pt-4">
+                    <p className="font-sans text-[11px] tracking-[0.2em] text-gray-400 uppercase mb-1">金属颜色</p>
                     <p className="zh-heading text-lg text-gray-900">{metalDisplay?.zhName || "—"}</p>
                   </div>
                   <div className="border-t border-gray-100 pt-4">
