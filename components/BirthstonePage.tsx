@@ -39,6 +39,7 @@ export default function BirthstonePage() {
         flower: selectedFlower,
         birthstone: selectedBirthstone,
         metal: "yellow",
+        material: "14k-gold",
         timestamp: Date.now(),
         flowerImage: flowerImages[selectedFlower.id] || "",
         imageUrl: imageUrl,
